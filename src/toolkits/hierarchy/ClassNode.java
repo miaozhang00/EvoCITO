@@ -1,4 +1,4 @@
-package toolkits.hierarchy;
+ï»¿package toolkits.hierarchy;
 
 import global.GlobalTag;
 
@@ -6,83 +6,82 @@ import java.util.HashSet;
 import java.util.Set;
 
 /*
- * µ¥¸öÀà¼Ì³ĞĞÅÏ¢
+ * å•ä¸ªç±»ç»§æ‰¿ä¿¡æ¯
  */
 public class ClassNode {
-	
-	String className;
-	
-	// ½Úµãºó¼Ì¼¯ºÏ
-	Set<ClassNode> successors;
-	
-	// ½ÚµãÇ°¼Ì¼¯ºÏ
-	Set<ClassNode> predecessors;
-	
-	public ClassNode(String className) {
-		this.className 		= className;
-		this.successors 	= new HashSet<ClassNode>();
-		this.predecessors 	= new HashSet<ClassNode>();
-	}
-	
-	public String className() {
-		return className;
-	}
-	
-	public void addPredecessor(ClassNode predecessor) {
-		this.predecessors.add(predecessor);
-	}
-	
-	public void addSuccessor(ClassNode successor) {
-		this.successors.add(successor);
-	}
-	
-	// »ñµÃÀàµÄµÚ1²ã¸¸Àà
-	public Set<ClassNode> getDirectPredecessors() {
-		return predecessors;
-	}
-	
-	// »ñµÃÀàµÄµÚ1²ã×ÓÀà
-	public Set<ClassNode> getDirectSuccessors() {
-		return successors;
-	}
-	
-	// »ñµÃÀàµÄËùÓĞ×ÓÀà
-	public Set<ClassNode> getAllSuccessors() {
-		Set<ClassNode> all = new HashSet<ClassNode>();
-		all.addAll(successors);
-		for (ClassNode succ : successors) {
-			all.addAll(succ.getAllSuccessors());
-		}
-		return all;
-	}
-	
-	public String toDump() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(GlobalTag.CLASS_NODE + "\t" + className + "\n");
-		
-		// Êä³öÀàµÄÇ°¼Ì£¨µÚ1²ã£©
-		sb.append(GlobalTag.PREDECESSOR);
-		for (ClassNode pred : predecessors) {
-			sb.append("\t" + pred.className());
-		}
-		sb.append("\n");
-		
-		// Êä³öÀàµÄºó¼Ì£¨µÚ1²ã£©
-		sb.append(GlobalTag.SUCCESSOR);
-		for (ClassNode succ : successors) {
-			sb.append("\t" + succ.className());
-		}
-		sb.append("\n");
-		
-		/*// Êä³öÀàµÄºó¼Ì£¨ËùÓĞ£©
-		sb.append(GlobalTag.SUCCESSOR_ALL);
-		for (ClassNode succ : getAllSuccessors()) {
-			sb.append("\t" + succ.className());
-		}
-		sb.append("\n");*/
-		
-		return sb.toString();
-	}
-	
+
+    String className;
+
+    // èŠ‚ç‚¹åç»§é›†åˆ
+    Set<ClassNode> successors;
+
+    // èŠ‚ç‚¹å‰ç»§é›†åˆ
+    Set<ClassNode> predecessors;
+
+    public ClassNode(String className) {
+        this.className = className;
+        this.successors = new HashSet<ClassNode>();
+        this.predecessors = new HashSet<ClassNode>();
+    }
+
+    public String className() {
+        return className;
+    }
+
+    public void addPredecessor(ClassNode predecessor) {
+        this.predecessors.add(predecessor);
+    }
+
+    public void addSuccessor(ClassNode successor) {
+        this.successors.add(successor);
+    }
+
+    // è·å¾—ç±»çš„ç¬¬1å±‚çˆ¶ç±»
+    public Set<ClassNode> getDirectPredecessors() {
+        return predecessors;
+    }
+
+    // è·å¾—ç±»çš„ç¬¬1å±‚å­ç±»
+    public Set<ClassNode> getDirectSuccessors() {
+        return successors;
+    }
+
+    // è·å¾—ç±»çš„æ‰€æœ‰å­ç±»
+    public Set<ClassNode> getAllSuccessors() {
+        Set<ClassNode> all = new HashSet<ClassNode>();
+        all.addAll(successors);
+        for (ClassNode succ : successors) {
+            all.addAll(succ.getAllSuccessors());
+        }
+        return all;
+    }
+
+    public String toDump() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(GlobalTag.CLASS_NODE + "\t" + className + "\n");
+
+        // è¾“å‡ºç±»çš„å‰ç»§ï¼ˆç¬¬1å±‚ï¼‰
+        sb.append(GlobalTag.PREDECESSOR);
+        for (ClassNode pred : predecessors) {
+            sb.append("\t" + pred.className());
+        }
+        sb.append("\n");
+
+        // è¾“å‡ºç±»çš„åç»§ï¼ˆç¬¬1å±‚ï¼‰
+        sb.append(GlobalTag.SUCCESSOR);
+        for (ClassNode succ : successors) {
+            sb.append("\t" + succ.className());
+        }
+        sb.append("\n");
+
+        /*
+         * // è¾“å‡ºç±»çš„åç»§ï¼ˆæ‰€æœ‰ï¼‰ sb.append(GlobalTag.SUCCESSOR_ALL); for (ClassNode succ
+         * : getAllSuccessors()) { sb.append("\t" + succ.className()); }
+         * sb.append("\n");
+         */
+
+        return sb.toString();
+    }
+
 }

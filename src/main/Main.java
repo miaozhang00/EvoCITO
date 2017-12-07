@@ -1,13 +1,13 @@
-package main;
+锘縫ackage main;
 
 import driver.Driver;
 
 /*
- * 主类
- * 程序入口类，引发程序执行
+ * 涓荤被
+ * 绋嬪簭鍏ュ彛绫伙紝寮曞彂绋嬪簭鎵ц
  */
 public class Main {
-	public static void main(String[] args) {
-		Driver.main(null);
-	}
+    public static void main(String[] args) {
+        Driver.main(null);
+    }
 }

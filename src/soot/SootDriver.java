@@ -1,5 +1,4 @@
-package soot;
-
+ï»¿package soot;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -13,119 +12,115 @@ import soot.Scene;
 import soot.options.Options;
 
 /**
- * ÓÃÀ´³õÊ¼»¯SootÉèÖÃµÄÀà
+ * ç”¨æ¥åˆå§‹åŒ–Sootè®¾ç½®çš„ç±»
  */
 public class SootDriver {
-	/**
-	 * µ¥Àı
-	 */
-	private static SootDriver driver;
-	/**
-	 * SootÖĞµÄ³¡¾°£¬ÓÃÀ´ÃèÊöÕû¸öÏµÍ³
-	 */
-	Scene scene;
-	/**
-	 * ÏµÍ³µÄÀàÂ·¾¶£¬ËùÓĞÊ¹ÓÃµ½µÄ¿â
-	 */
-	String classpath;
-	/**
-	 * ¹¤×÷¿Õ¼ä£¬applicationÀàµÄÂ·¾¶
-	 */
-	String workspace;
-	
-	private SootDriver() {};
-	
-	public synchronized static SootDriver getInstance() {
-		if (driver == null) {
-			driver = new SootDriver();
-		}
-		
-		return driver;
-	}
-	
-	/**
-	 * ·µ»ØSootµÄ²ÎÊıÁĞ±í
-	 */
-	private List<String> getOptions() {
-		return Arrays.asList(new String[]{
-			"-p", "jb", "enabled:true,use-original-names:true",
-			"-p", "jb.ls", "enabled:true", 
-			"-p", "jb.a", "enabled:true,only-stack-locals:true", 
-			"-p", "jb.ulp", "enabled:false", 
-			"-p", "wjtp", "enabled:true", 
-			"-src-prec", "java", "-f", "n", "-w", "-keep-line-number", 
-			"-allow-phantom-refs",
-		});
-	}
-	
-	/**
-	 * ´¦ÀíÎÄ¼ş¼Ğ¡£³õÊ¼»¯sootµÄÀàÂ·¾¶
-	 */
-	public void prosessDir(String classpath, String workspace) {
-		reset();
-		
-		this.scene = Scene.v();
-//		scene.
-		
-		if (!classpath.endsWith(File.pathSeparator)) {
-			classpath += File.pathSeparator;
-		}
-		
-		// ÔÚ´¦Àí°üº¬phantomÀàµÄÊ±ºò£¬²»ÄÜ½«Òª´¦ÀíµÄÔ´Âë¼ÓÈëworkspace
-		// ÁíÍâ±ØĞëÌí¼Ó±àÒëÖ®ºóµÄclassÎÄ¼ş£¬²¢ÇÒÎÄ¼ş¼Ğ×öÂ·¾¶ÒªÒÔ\½áÎ²
-		classpath += workspace;
-		this.classpath = classpath;
-		this.workspace = workspace;
-		
-		Options.v().set_app(true);
-		List<String> argsList = new ArrayList<String>();	// ´¦Àísoot.Main()º¯ÊıµÄ²ÎÊı
-		argsList.addAll(getOptions());
-		
-		String[] w = workspace.split(File.pathSeparator);
-		for (int i = 0; i < w.length; ++i) {
-			argsList.addAll(Arrays.asList(new String[] {"-process-dir", w[i]}));
-		}
-		
-		argsList.addAll(Arrays.asList(new String[] {"-cp", classpath}));
-		
-		/*
-		 * test1124
-		 */
-		for(String str : argsList){
-			System.out.println("Â·¾¶(£»¡ä¡Ğ`)/(¨Òo¨Ò)/~~");
-			System.out.println(str);
-		}
-		
-		long begintime = System.currentTimeMillis();
-		Date now = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-		String curTime = dateFormat.format(now);
-		
-		System.out.println(curTime + ", soot preprocessing start");
-		
-		soot.options.Options.v().parse(argsList.toArray(new String[0]));
-		try {
-			Scene.v().loadNecessaryClasses();
-		} catch (Exception e) {
-			// TODO: handle exception
-			throw new RuntimeException("soot error");
-		}
-		
-		now = new Date();
-		curTime = dateFormat.format(now);
-		long endtime = System.currentTimeMillis();
-		System.out.println(curTime + ", soot preprocessing finished, " + (endtime - begintime) + "ms total.");
-		
-	}
-	
-	/**
-	 * ÖØÖÃsoot
-	 */
-	private void reset() {
-		if (scene != null) {
-			G.reset();
-			scene = null;
-		}
-	}
-	
+    /**
+     * å•ä¾‹
+     */
+    private static SootDriver driver;
+    /**
+     * Sootä¸­çš„åœºæ™¯ï¼Œç”¨æ¥æè¿°æ•´ä¸ªç³»ç»Ÿ
+     */
+    Scene scene;
+    /**
+     * ç³»ç»Ÿçš„ç±»è·¯å¾„ï¼Œæ‰€æœ‰ä½¿ç”¨åˆ°çš„åº“
+     */
+    String classpath;
+    /**
+     * å·¥ä½œç©ºé—´ï¼Œapplicationç±»çš„è·¯å¾„
+     */
+    String workspace;
+
+    private SootDriver() {
+    };
+
+    public synchronized static SootDriver getInstance() {
+        if (driver == null) {
+            driver = new SootDriver();
+        }
+
+        return driver;
+    }
+
+    /**
+     * è¿”å›Sootçš„å‚æ•°åˆ—è¡¨
+     */
+    private List<String> getOptions() {
+        return Arrays.asList(new String[] { "-p", "jb", "enabled:true,use-original-names:true", "-p", "jb.ls",
+                "enabled:true", "-p", "jb.a", "enabled:true,only-stack-locals:true", "-p", "jb.ulp", "enabled:false",
+                "-p", "wjtp", "enabled:true", "-src-prec", "java", "-f", "n", "-w", "-keep-line-number",
+                "-allow-phantom-refs", });
+    }
+
+    /**
+     * å¤„ç†æ–‡ä»¶å¤¹ã€‚åˆå§‹åŒ–sootçš„ç±»è·¯å¾„
+     */
+    public void prosessDir(String classpath, String workspace) {
+        reset();
+
+        this.scene = Scene.v();
+        // scene.
+
+        if (!classpath.endsWith(File.pathSeparator)) {
+            classpath += File.pathSeparator;
+        }
+
+        // åœ¨å¤„ç†åŒ…å«phantomç±»çš„æ—¶å€™ï¼Œä¸èƒ½å°†è¦å¤„ç†çš„æºç åŠ å…¥workspace
+        // å¦å¤–å¿…é¡»æ·»åŠ ç¼–è¯‘ä¹‹åçš„classæ–‡ä»¶ï¼Œå¹¶ä¸”æ–‡ä»¶å¤¹åšè·¯å¾„è¦ä»¥\ç»“å°¾
+        classpath += workspace;
+        this.classpath = classpath;
+        this.workspace = workspace;
+
+        Options.v().set_app(true);
+        List<String> argsList = new ArrayList<String>(); // å¤„ç†soot.Main()å‡½æ•°çš„å‚æ•°
+        argsList.addAll(getOptions());
+
+        String[] w = workspace.split(File.pathSeparator);
+        for (int i = 0; i < w.length; ++i) {
+            argsList.addAll(Arrays.asList(new String[] { "-process-dir", w[i] }));
+        }
+
+        argsList.addAll(Arrays.asList(new String[] { "-cp", classpath }));
+
+        /*
+         * test1124
+         */
+        for (String str : argsList) {
+            System.out.println("è·¯å¾„(ï¼›â€²âŒ’`)/(ã„’oã„’)/~~");
+            System.out.println(str);
+        }
+
+        long begintime = System.currentTimeMillis();
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+        String curTime = dateFormat.format(now);
+
+        System.out.println(curTime + ", soot preprocessing start");
+
+        soot.options.Options.v().parse(argsList.toArray(new String[0]));
+        try {
+            Scene.v().loadNecessaryClasses();
+        } catch (Exception e) {
+            // TODO: handle exception
+            throw new RuntimeException("soot error");
+        }
+
+        now = new Date();
+        curTime = dateFormat.format(now);
+        long endtime = System.currentTimeMillis();
+        System.out.println(curTime + ", soot preprocessing finished, " + (endtime - begintime) + "ms total.");
+
+    }
+
+    /**
+     * é‡ç½®soot
+     */
+    private void reset() {
+        if (scene != null) {
+            G.reset();
+            scene = null;
+        }
+    }
+
 }

@@ -1,5 +1,4 @@
-package soot;
-
+ï»¿package soot;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,97 +15,98 @@ import soot.SootMethod;
 import soot.VoidType;
 
 public class SystemContext {
-	/**
-	 * µ¥ÀıÄ£Ê½
-	 */
-	private static SystemContext instance;
-	
-	public static synchronized SystemContext getInstance() {
-		if (instance == null) {
-			instance = new SystemContext();
-		}
-		return instance;
-	}
-	
-	private SystemContext() {}
-	
-	/**
-	 * ·µ»ØÊÇ·ñ°üº¬ÀàscName
-	 */
-	public boolean containsClass(final String scName) {
-		return Scene.v().containsClass(scName);
-	}
-	
-	/**
-	 * ·µ»ØËùÓĞµÄÓ¦ÓÃÀà
-	 */
-	public Collection<SootClass> getApplicationClasses() {
-		return Collections.unmodifiableCollection(Scene.v().getApplicationClasses());
-	}
-	
-	/**
-	 * ·µ»ØÃûÎªclassNameµÄÀà£¬°üÀ¨°üÃû
-	 */
-	public SootClass getClassByName(final String className) {
-		Scene _scene = Scene.v();
-		if (!_scene.containsClass(className)) {
-			_scene.loadClassAndSupport(className);
-		}
-		return _scene.getSootClass(className);
-	}
-	
-	/**
-	 * ·µ»ØËùÓĞµÄÀà
-	 */
-	public Collection<SootClass> getClasses() {
-		return Scene.v().getClasses();
-	}
-	
-	/**
-	 * ·µ»ØpgName°üÖĞËùÓĞµÄapplicationÀà
-	 */
-	public List<SootClass> getClassesOfPackage(String pgName) {
-		List<SootClass> _result = new ArrayList<SootClass>();
-		for (SootClass _sc : getApplicationClasses()) {
-			if (_sc.getPackageName().equals(pgName)) {
-				_result.add(_sc);
-			}
-		}
-		return _result;
-	}
-	
-	/**
-	 * ·µ»ØËùÓĞ°üº¬applicationÀàµÄ°ü
-	 */
-	public List<String> getPackagesName() {
-		Collection<SootClass> _classes = Scene.v().getApplicationClasses();
-		List<String> _result = new ArrayList<String>();
-		for (SootClass _sc : _classes) {
-			String packageName = _sc.getPackageName();
-			if (_result.indexOf(packageName) >= 0) {
-				continue;
-			}
-			_result.add(packageName);
-		}
-		return _result;
-	}
-	
-	/**
-	 * ·µ»ØËùÓĞÈë¿Ú·½·¨
-	 */
-	public Collection<SootMethod> getRoots() {
-		final Collection<SootMethod> _temp = new HashSet<SootMethod>();
-		final List<ArrayType> _argList = Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1));
-		
-		for (final Iterator<SootClass> _i = getClasses().iterator(); _i.hasNext();) {
-			final SootClass _sc = _i.next();
-			final SootMethod _sm = _sc.getMethod("main", _argList, VoidType.v());
-			
-			if (_sm != null && _sm.isStatic() && _sm.isPublic()) {
-				_temp.add(_sm);
-			}
-		}
-		
-		return _temp;
-	}
+    /**
+     * å•ä¾‹æ¨¡å¼
+     */
+    private static SystemContext instance;
+
+    public static synchronized SystemContext getInstance() {
+        if (instance == null) {
+            instance = new SystemContext();
+        }
+        return instance;
+    }
+
+    private SystemContext() {
+    }
+
+    /**
+     * è¿”å›æ˜¯å¦åŒ…å«ç±»scName
+     */
+    public boolean containsClass(final String scName) {
+        return Scene.v().containsClass(scName);
+    }
+
+    /**
+     * è¿”å›æ‰€æœ‰çš„åº”ç”¨ç±»
+     */
+    public Collection<SootClass> getApplicationClasses() {
+        return Collections.unmodifiableCollection(Scene.v().getApplicationClasses());
+    }
+
+    /**
+     * è¿”å›åä¸ºclassNameçš„ç±»ï¼ŒåŒ…æ‹¬åŒ…å
+     */
+    public SootClass getClassByName(final String className) {
+        Scene _scene = Scene.v();
+        if (!_scene.containsClass(className)) {
+            _scene.loadClassAndSupport(className);
+        }
+        return _scene.getSootClass(className);
+    }
+
+    /**
+     * è¿”å›æ‰€æœ‰çš„ç±»
+     */
+    public Collection<SootClass> getClasses() {
+        return Scene.v().getClasses();
+    }
+
+    /**
+     * è¿”å›pgNameåŒ…ä¸­æ‰€æœ‰çš„applicationç±»
+     */
+    public List<SootClass> getClassesOfPackage(String pgName) {
+        List<SootClass> _result = new ArrayList<SootClass>();
+        for (SootClass _sc : getApplicationClasses()) {
+            if (_sc.getPackageName().equals(pgName)) {
+                _result.add(_sc);
+            }
+        }
+        return _result;
+    }
+
+    /**
+     * è¿”å›æ‰€æœ‰åŒ…å«applicationç±»çš„åŒ…
+     */
+    public List<String> getPackagesName() {
+        Collection<SootClass> _classes = Scene.v().getApplicationClasses();
+        List<String> _result = new ArrayList<String>();
+        for (SootClass _sc : _classes) {
+            String packageName = _sc.getPackageName();
+            if (_result.indexOf(packageName) >= 0) {
+                continue;
+            }
+            _result.add(packageName);
+        }
+        return _result;
+    }
+
+    /**
+     * è¿”å›æ‰€æœ‰å…¥å£æ–¹æ³•
+     */
+    public Collection<SootMethod> getRoots() {
+        final Collection<SootMethod> _temp = new HashSet<SootMethod>();
+        final List<ArrayType> _argList = Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1));
+
+        for (final Iterator<SootClass> _i = getClasses().iterator(); _i.hasNext();) {
+            final SootClass _sc = _i.next();
+            final SootMethod _sm = _sc.getMethod("main", _argList, VoidType.v());
+
+            if (_sm != null && _sm.isStatic() && _sm.isPublic()) {
+                _temp.add(_sm);
+            }
+        }
+
+        return _temp;
+    }
 }

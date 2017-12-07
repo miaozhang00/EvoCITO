@@ -1,4 +1,4 @@
-package mgr;
+ï»¿package mgr;
 
 import global.GlobalTag;
 
@@ -13,82 +13,82 @@ import data.DataCenter;
 import analysis.Analyszer;
 
 /*
- * ¹ÜÀíÀà
- * ¸ºÔğÕû¸ö³ÌĞòµÄÊäÈë£¬·ÖÎöºÍÊä³ö
+ * ç®¡ç†ç±»
+ * è´Ÿè´£æ•´ä¸ªç¨‹åºçš„è¾“å…¥ï¼Œåˆ†æå’Œè¾“å‡º
  */
 public class Manager {
-	
-	// ÅäÖÃÎÄ¼ş
-	Properties config;
-	
-	// Êı¾İÖĞĞÄ
-	DataCenter 		dc;
-	
-	// Â·¾¶¹ÜÀíÆ÷
-	LocationManager locMgr;
-	
-	// ¼ÓÔØ¹ÜÀíÆ÷
-	LoadManager 	loadMgr;
-	
-	// ×ª´¢¹ÜÀíÆ÷
-	DumpManager 	dumpMgr;
-	
-	// ³ÌĞò·ÖÎöÆ÷
-	Analyszer 		analyszer;
-	
-	// Êı¾İ´¦ÀíÆ÷
-	Processor 		processor;
-	
-	public Manager() {
-		initial();
-		
-		this.dc 		= new DataCenter(config);
-		this.locMgr 	= new LocationManager(dc);
-		this.loadMgr 	= new LoadManager(dc, locMgr);
-		this.dumpMgr 	= new DumpManager(dc, locMgr);
-		this.analyszer 	= new Analyszer(dc);
-		this.processor 	= new Processor(dc);
-	}
-	
-	private void initial() {
-		initialConfig();
-	}
-	
-	// ¶ÁÈë²ÎÊı
-	private void initialConfig() {
-		this.config = new Properties();
-		try {
-			config.load(new FileInputStream(
-					GlobalTag.LOC_CONFIG + "/" + GlobalTag.FILE_CONFIG));
-		} catch (FileNotFoundException e) {
-			System.err.println(e);
-		} catch (IOException e) {
-			System.err.println(e);
-		}
-	}
-	
-	public void load(String loadType) {
-		loadMgr.load(loadType);
-	}
-	
-	public void analyze() {
-		analyszer.analysis();
-	}
-	
-	public void process() {
-		processor.process();
-	}
-	
-	public void processGA(){
-		processor.processGA();
-	}
-	
-	public void processRIA(){
-		processor.processRIA();
-	}
-	// ×ª´¢ĞÅÏ¢
-	public void dump(String dumpObject) {
-		dumpMgr.dump(dumpObject);
-	}
-	
+
+    // é…ç½®æ–‡ä»¶
+    Properties config;
+
+    // æ•°æ®ä¸­å¿ƒ
+    DataCenter dc;
+
+    // è·¯å¾„ç®¡ç†å™¨
+    LocationManager locMgr;
+
+    // åŠ è½½ç®¡ç†å™¨
+    LoadManager loadMgr;
+
+    // è½¬å‚¨ç®¡ç†å™¨
+    DumpManager dumpMgr;
+
+    // ç¨‹åºåˆ†æå™¨
+    Analyszer analyszer;
+
+    // æ•°æ®å¤„ç†å™¨
+    Processor processor;
+
+    public Manager() {
+        initial();
+
+        this.dc = new DataCenter(config);
+        this.locMgr = new LocationManager(dc);
+        this.loadMgr = new LoadManager(dc, locMgr);
+        this.dumpMgr = new DumpManager(dc, locMgr);
+        this.analyszer = new Analyszer(dc);
+        this.processor = new Processor(dc);
+    }
+
+    private void initial() {
+        initialConfig();
+    }
+
+    // è¯»å…¥å‚æ•°
+    private void initialConfig() {
+        this.config = new Properties();
+        try {
+            config.load(new FileInputStream(GlobalTag.LOC_CONFIG + "/" + GlobalTag.FILE_CONFIG));
+        } catch (FileNotFoundException e) {
+            System.err.println(e);
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+
+    public void load(String loadType) {
+        loadMgr.load(loadType);
+    }
+
+    public void analyze() {
+        analyszer.analysis();
+    }
+
+    public void process() {
+        processor.process();
+    }
+
+    public void processGA() {
+        processor.processGA();
+    }
+
+    public void processRIA() {
+        processor.processRIA();
+    }
+
+    // è½¬å‚¨ä¿¡æ¯
+    public void dump(String dumpObject) {
+        dumpMgr.dump(dumpObject);
+    }
+
 }

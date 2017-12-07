@@ -1,4 +1,4 @@
-package toolkits.pso;
+ï»¿package toolkits.pso;
 
 import global.GlobalTag;
 
@@ -9,137 +9,119 @@ import process.StupComplexityFitnessCalculator;
 
 public class PSOData {
 
-	/*
-	 * ÖÖÈºÊýÄ¿
-	 */
-	int particleNumber;
-	
-	/*
-	 * µü´ú´ÎÊý
-	 */
-	int iterations;
-	
-	/*
-	 * Çø¼ä×îÐ¡Öµ
-	 */
-	BigInteger WMIN;
-	
-	/*
-	 * Çø¼ä×î´óÖµ
-	 */
-	BigInteger WMAX;
-	
-	/*
-	 * ËÙ¶È×î´óÖµ
-	 */
-	BigInteger VMAX;
-	
-	/*
-	 * ÊÊÓ¦¶ÈÖµ¼ÆËãÆ÷
-	 */
-	StupComplexityFitnessCalculator scf;
-	
-	/*
-	 * ¸÷´úÎ»ÖÃ
-	 */
-	BigInteger pos[][];
-	
-	/*
-	 * ¸÷´úÊÊÓ¦¶ÈÖµ
-	 */
-	BigDecimal fit[][];
-	
-	public PSOData(
-			int particleNumber,
-			int iterations,
-			BigInteger WMIN,
-			BigInteger WMAX,
-			BigInteger VMAX,
-			StupComplexityFitnessCalculator scf
-			) {
-		this.particleNumber = particleNumber;
-		this.iterations 	= iterations;
-		this.WMIN 			= WMIN;
-		this.WMAX 			= WMAX;
-		this.VMAX 			= VMAX;
-		this.scf 			= scf;
-		
-		this.pos 	= new BigInteger[particleNumber][iterations+1];
-		this.fit	= new BigDecimal[particleNumber][iterations+1];
-	}
-	
-	public int getParticleNumber() {
-		return this.particleNumber;
-	}
-	
-	public int getIterations() {
-		return this.iterations;
-	}
-	
-	public BigInteger getWMIN() {
-		return this.WMIN;
-	}
-	
-	public BigInteger getWMAX() {
-		return this.WMAX;
-	}
-	
-	public BigInteger getVMAX() {
-		return this.VMAX;
-	}
-	
-	public StupComplexityFitnessCalculator getFitness() {
-		return this.scf;
-	}
-	
-	public void addPosition(int particial, int iteration, BigInteger position) {
-		this.pos[particial][iteration] = position;
-	}
-	
-	public void addFitness(int particial, int iteration, BigDecimal fitness) {
-		this.fit[particial][iteration] = fitness;
-	}
-	
-	public String toDump() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(GlobalTag.SEPARATE_64 + "\n");
-		sb.append(GlobalTag.SEPARATE_64 + "\n");
-		sb.append(GlobalTag.PSO_DATA + "\n");
-		
-		sb.append(GlobalTag.PARTICAL_NUM + "\t" + particleNumber + "\n");
-		sb.append(GlobalTag.ITERATIONS + "\t" + iterations + "\n");
-		
-		for (int ite=0; ite<=iterations; ++ite) {
-			
-			sb.append(GlobalTag.ITERATION + "\t" + ite);
-			
-			for (int partical=0; partical<particleNumber; ++partical) {
-				BigInteger position	= pos[partical][ite];
-				BigDecimal fitness 	= fit[partical][ite];
-				
-				sb.append("\t" + GlobalTag.PARTICAL + "_" + partical
-						+ "\t" + position + "\t" + fitness);
-			}
-			
-			sb.append("\n");
-		}
-		
-		sb.append(GlobalTag.SEPARATE_64 + "\n");
-		sb.append(GlobalTag.SEPARATE_64 + "\n");
-		
-		return sb.toString();
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    /*
+     * ç§ç¾¤æ•°ç›®
+     */
+    int particleNumber;
+
+    /*
+     * è¿­ä»£æ¬¡æ•°
+     */
+    int iterations;
+
+    /*
+     * åŒºé—´æœ€å°å€¼
+     */
+    BigInteger WMIN;
+
+    /*
+     * åŒºé—´æœ€å¤§å€¼
+     */
+    BigInteger WMAX;
+
+    /*
+     * é€Ÿåº¦æœ€å¤§å€¼
+     */
+    BigInteger VMAX;
+
+    /*
+     * é€‚åº”åº¦å€¼è®¡ç®—å™¨
+     */
+    StupComplexityFitnessCalculator scf;
+
+    /*
+     * å„ä»£ä½ç½®
+     */
+    BigInteger pos[][];
+
+    /*
+     * å„ä»£é€‚åº”åº¦å€¼
+     */
+    BigDecimal fit[][];
+
+    public PSOData(int particleNumber, int iterations, BigInteger WMIN, BigInteger WMAX, BigInteger VMAX,
+            StupComplexityFitnessCalculator scf) {
+        this.particleNumber = particleNumber;
+        this.iterations = iterations;
+        this.WMIN = WMIN;
+        this.WMAX = WMAX;
+        this.VMAX = VMAX;
+        this.scf = scf;
+
+        this.pos = new BigInteger[particleNumber][iterations + 1];
+        this.fit = new BigDecimal[particleNumber][iterations + 1];
+    }
+
+    public int getParticleNumber() {
+        return this.particleNumber;
+    }
+
+    public int getIterations() {
+        return this.iterations;
+    }
+
+    public BigInteger getWMIN() {
+        return this.WMIN;
+    }
+
+    public BigInteger getWMAX() {
+        return this.WMAX;
+    }
+
+    public BigInteger getVMAX() {
+        return this.VMAX;
+    }
+
+    public StupComplexityFitnessCalculator getFitness() {
+        return this.scf;
+    }
+
+    public void addPosition(int particial, int iteration, BigInteger position) {
+        this.pos[particial][iteration] = position;
+    }
+
+    public void addFitness(int particial, int iteration, BigDecimal fitness) {
+        this.fit[particial][iteration] = fitness;
+    }
+
+    public String toDump() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(GlobalTag.SEPARATE_64 + "\n");
+        sb.append(GlobalTag.SEPARATE_64 + "\n");
+        sb.append(GlobalTag.PSO_DATA + "\n");
+
+        sb.append(GlobalTag.PARTICAL_NUM + "\t" + particleNumber + "\n");
+        sb.append(GlobalTag.ITERATIONS + "\t" + iterations + "\n");
+
+        for (int ite = 0; ite <= iterations; ++ite) {
+
+            sb.append(GlobalTag.ITERATION + "\t" + ite);
+
+            for (int partical = 0; partical < particleNumber; ++partical) {
+                BigInteger position = pos[partical][ite];
+                BigDecimal fitness = fit[partical][ite];
+
+                sb.append("\t" + GlobalTag.PARTICAL + "_" + partical + "\t" + position + "\t" + fitness);
+            }
+
+            sb.append("\n");
+        }
+
+        sb.append(GlobalTag.SEPARATE_64 + "\n");
+        sb.append(GlobalTag.SEPARATE_64 + "\n");
+
+        return sb.toString();
+    }
+
 }

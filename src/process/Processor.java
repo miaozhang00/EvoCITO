@@ -1,4 +1,4 @@
-package process;
+ï»¿package process;
 
 import java.math.BigInteger;
 import java.util.LinkedList;
@@ -15,127 +15,130 @@ import ga.ConnectDataCenter;
 import ga.GeneticAlgorithms;
 
 public class Processor {
-	
-	DataCenter dc;
-	
-	StupComplexity stupComplexity;
-	
-	Factorial factorial;
-	
-	PSO pso;
-	public Processor() {
-		
-	}
-	public Processor(DataCenter dc) {
-		this.dc = dc;
-		this.stupComplexity = dc.getStupComplexity();
-	}
 
-	public void processRIA(){
-		
-		//ÉèÖÃÍË»ğ³õÊ¼ÎÂ¶È
-		double T = 100.0;
-		//ÉèÖÃ½µÎÂÏµÊı
-		double a = 0.95;
-		//ÉèÖÃÔËĞĞ´úÊı
-		int GenerationOfOrders = 100;
-		
-		System.out.println("random iterative algorithms start: ...");
-		long time_s = System.currentTimeMillis();
-		
-		ConnectDataCenter cdc = new ConnectDataCenter(stupComplexity);
-		List<SourceClassInfo> listOfRIA = cdc.getSCIfromDC();
-		
-		RandomIterativeAlgorithms ria = new RandomIterativeAlgorithms(GenerationOfOrders,listOfRIA, T, a);
-		ria.generateClassListBasedonRIA(listOfRIA);
-		
-		long time_e = System.currentTimeMillis();
-		System.out.println("random iterative algorithms finished, "	+ (time_e - time_s) + "ms total.");
-		
-	}
-	public void processGA(){
-		
-		//ÉèÖÃÖÖÈº´óĞ¡
-		int SizeOfPops = stupComplexity.getSizeOfSourceClassInfo();
-		//ÉèÖÃ½»²æÂÊ
-		double pc = 0.5;
-		//ÉèÖÃ±äÒìÂÊ
-		double pm = 0.015;
-		//ÉèÖÃÔËĞĞ´úÊı
-		int GenerationOfPops = 100;
-		
-		System.out.println("genetic algorithms start: ...");
-		long time_s = System.currentTimeMillis();
-		
-		ConnectDataCenter cdc = new ConnectDataCenter(stupComplexity);
-		List<SourceClassInfo> listOfGA = cdc.getSCIfromDC();
-		
-		
-		GeneticAlgorithms ga = new GeneticAlgorithms(SizeOfPops, listOfGA, pc, pm, GenerationOfPops);
-		ga.generateClassListBasedGA(SizeOfPops, listOfGA);
-		
-		long time_e = System.currentTimeMillis();
-		System.out.println("genetic algorithms finished, "	+ (time_e - time_s) + "ms total.");
-		
-	}
-	public void process() {
-		
-		int size_sci = stupComplexity.getSizeOfSourceClassInfo();
-		
-		// °´ÕÕSourceClassÖĞDependencyµÄÊıÁ¿ÓÉ¶àµ½ÉÙ½øĞĞÅÅĞò£¨DESC£©
-		{
-			this.stupComplexity.sort(new DependencyDESCComparator());
-		}
-		
-		// ¼ÆËãÇø¼äÎ»ÖÃ
-		{
-			this.factorial = new Factorial(BigInteger.valueOf(size_sci));
-		}
-		
-		// »ùÓÚÁ£×ÓÈºÓÅ»¯µÄÀà²âÊÔĞòÉú³É
-		{
-			generateClassListBasedPSO(size_sci);
-		}
-		
-	}
-	
-	// »ùÓÚÁ£×ÓÈºÓÅ»¯µÄÀà²âÊÔĞòÉú³É
-	public void generateClassListBasedPSO(int sizeOfClass) {
-		int particleNumber 	= 100;
-		int iterations		= 500;
-		BigInteger WMIN		= new BigInteger("0");
-		BigInteger WMAX		= this.factorial.getSubFactorial(sizeOfClass - 1).subtract(new BigInteger("1"));
-		BigInteger VMAX 	= this.factorial.getSubFactorial(sizeOfClass - 2).subtract(new BigInteger("1"));
-		StupComplexityFitnessCalculator scf 	= new StupComplexityFitnessCalculator(stupComplexity, factorial);
-		List<SourceClassInfo> list = scf.getSCIfromDC();
-		System.out.println("---getSCIfromDC---" + list.size());
-		for(SourceClassInfo sci : list){
-			System.out.println("sci.name----" + sci.className());
-		}
-		PSOData psoData 	= new PSOData(particleNumber, iterations, WMIN, WMAX, VMAX, scf);
-		
-		System.out.println("WMIN: " + WMIN);
-		System.out.println("WMAX: " + WMAX);
-		
-		System.out.println("pso start: ...");
-		long time_s = System.currentTimeMillis();
-		
-		this.pso = new PSO(psoData);
-		this.pso.doPSO();
-		
-		long time_e = System.currentTimeMillis();
-		System.out.println("pso finished, "	+ (time_e - time_s) + "ms total.");
-	}
-	
-	//»ñÈ¡ĞèÒªÓÃµ½µÄËùÓĞµÄÀàĞÅÏ¢
-	public List<SourceClassInfo> getSCIfromDC(){
-		
-		List<SourceClassInfo> sci_initial = new LinkedList<SourceClassInfo>();
-		
-		List<SourceClassInfo> sci_list = stupComplexity.getListOfSourceClassInfo();
-		for(SourceClassInfo sci : sci_list){
-			sci_initial.add(sci);
-		}
-		return sci_initial;
-	}
+    DataCenter dc;
+
+    StupComplexity stupComplexity;
+
+    Factorial factorial;
+
+    PSO pso;
+
+    public Processor() {
+
+    }
+
+    public Processor(DataCenter dc) {
+        this.dc = dc;
+        this.stupComplexity = dc.getStupComplexity();
+    }
+
+    public void processRIA() {
+
+        // è®¾ç½®é€€ç«åˆå§‹æ¸©åº¦
+        double T = 100.0;
+        // è®¾ç½®é™æ¸©ç³»æ•°
+        double a = 0.95;
+        // è®¾ç½®è¿è¡Œä»£æ•°
+        int GenerationOfOrders = 100;
+
+        System.out.println("random iterative algorithms start: ...");
+        long time_s = System.currentTimeMillis();
+
+        ConnectDataCenter cdc = new ConnectDataCenter(stupComplexity);
+        List<SourceClassInfo> listOfRIA = cdc.getSCIfromDC();
+
+        RandomIterativeAlgorithms ria = new RandomIterativeAlgorithms(GenerationOfOrders, listOfRIA, T, a);
+        ria.generateClassListBasedonRIA(listOfRIA);
+
+        long time_e = System.currentTimeMillis();
+        System.out.println("random iterative algorithms finished, " + (time_e - time_s) + "ms total.");
+
+    }
+
+    public void processGA() {
+
+        // è®¾ç½®ç§ç¾¤å¤§å°
+        int SizeOfPops = stupComplexity.getSizeOfSourceClassInfo();
+        // è®¾ç½®äº¤å‰ç‡
+        double pc = 0.5;
+        // è®¾ç½®å˜å¼‚ç‡
+        double pm = 0.015;
+        // è®¾ç½®è¿è¡Œä»£æ•°
+        int GenerationOfPops = 100;
+
+        System.out.println("genetic algorithms start: ...");
+        long time_s = System.currentTimeMillis();
+
+        ConnectDataCenter cdc = new ConnectDataCenter(stupComplexity);
+        List<SourceClassInfo> listOfGA = cdc.getSCIfromDC();
+
+        GeneticAlgorithms ga = new GeneticAlgorithms(SizeOfPops, listOfGA, pc, pm, GenerationOfPops);
+        ga.generateClassListBasedGA(SizeOfPops, listOfGA);
+
+        long time_e = System.currentTimeMillis();
+        System.out.println("genetic algorithms finished, " + (time_e - time_s) + "ms total.");
+
+    }
+
+    public void process() {
+
+        int size_sci = stupComplexity.getSizeOfSourceClassInfo();
+
+        // æŒ‰ç…§SourceClassä¸­Dependencyçš„æ•°é‡ç”±å¤šåˆ°å°‘è¿›è¡Œæ’åºï¼ˆDESCï¼‰
+        {
+            this.stupComplexity.sort(new DependencyDESCComparator());
+        }
+
+        // è®¡ç®—åŒºé—´ä½ç½®
+        {
+            this.factorial = new Factorial(BigInteger.valueOf(size_sci));
+        }
+
+        // åŸºäºç²’å­ç¾¤ä¼˜åŒ–çš„ç±»æµ‹è¯•åºç”Ÿæˆ
+        {
+            generateClassListBasedPSO(size_sci);
+        }
+
+    }
+
+    // åŸºäºç²’å­ç¾¤ä¼˜åŒ–çš„ç±»æµ‹è¯•åºç”Ÿæˆ
+    public void generateClassListBasedPSO(int sizeOfClass) {
+        int particleNumber = 100;
+        int iterations = 500;
+        BigInteger WMIN = new BigInteger("0");
+        BigInteger WMAX = this.factorial.getSubFactorial(sizeOfClass - 1).subtract(new BigInteger("1"));
+        BigInteger VMAX = this.factorial.getSubFactorial(sizeOfClass - 2).subtract(new BigInteger("1"));
+        StupComplexityFitnessCalculator scf = new StupComplexityFitnessCalculator(stupComplexity, factorial);
+        List<SourceClassInfo> list = scf.getSCIfromDC();
+        System.out.println("---getSCIfromDC---" + list.size());
+        for (SourceClassInfo sci : list) {
+            System.out.println("sci.name----" + sci.className());
+        }
+        PSOData psoData = new PSOData(particleNumber, iterations, WMIN, WMAX, VMAX, scf);
+
+        System.out.println("WMIN: " + WMIN);
+        System.out.println("WMAX: " + WMAX);
+
+        System.out.println("pso start: ...");
+        long time_s = System.currentTimeMillis();
+
+        this.pso = new PSO(psoData);
+        this.pso.doPSO();
+
+        long time_e = System.currentTimeMillis();
+        System.out.println("pso finished, " + (time_e - time_s) + "ms total.");
+    }
+
+    // è·å–éœ€è¦ç”¨åˆ°çš„æ‰€æœ‰çš„ç±»ä¿¡æ¯
+    public List<SourceClassInfo> getSCIfromDC() {
+
+        List<SourceClassInfo> sci_initial = new LinkedList<SourceClassInfo>();
+
+        List<SourceClassInfo> sci_list = stupComplexity.getListOfSourceClassInfo();
+        for (SourceClassInfo sci : sci_list) {
+            sci_initial.add(sci);
+        }
+        return sci_initial;
+    }
 }

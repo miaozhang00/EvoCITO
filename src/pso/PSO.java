@@ -1,4 +1,4 @@
-package pso;
+ï»¿package pso;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -12,188 +12,192 @@ import toolkits.pso.PSOData;
 
 public class PSO {
 
-	// ÅäÖÃ¡¢¼ÇÂ¼PSOĞÅÏ¢
-	PSOData psoData;
-	
-	// ÖÖÈºÊıÄ¿
-	private int particleNumber;
+    // é…ç½®ã€è®°å½•PSOä¿¡æ¯
+    PSOData psoData;
 
-	// µü´ú´ÎÊı
-	private int iterations;
+    // ç§ç¾¤æ•°ç›®
+    private int particleNumber;
 
-	// Î»ÖÃÇø¼ä
-	private BigInteger WMIN;
-	private BigInteger WMAX;
+    // è¿­ä»£æ¬¡æ•°
+    private int iterations;
 
-	// ËÙ¶ÈÇø¼ä
-	private BigInteger VMAX;
+    // ä½ç½®åŒºé—´
+    private BigInteger WMIN;
+    private BigInteger WMAX;
 
-	// Î»ÖÃ
-	private BigInteger x[];
+    // é€Ÿåº¦åŒºé—´
+    private BigInteger VMAX;
 
-	// ËÙ¶È
-	private BigInteger v[];
+    // ä½ç½®
+    private BigInteger x[];
 
-	// ÊÊÓ¦¶ÈÖµ
-	private BigDecimal fit[];
-	
-	// ÊôĞÔÊÊÓ¦¶ÈÖµ
-//	private BigDecimal fit_attr[];
-	
-	// ·½·¨ÊÊÓ¦¶ÈÖµ
-//	private BigDecimal fit_method[];
+    // é€Ÿåº¦
+    private BigInteger v[];
 
-	// µ¥¸öÁ£×Ó×îÓÅÎ»ÖÃ
-	private BigInteger xpbest[];
+    // é€‚åº”åº¦å€¼
+    private BigDecimal fit[];
 
-	// µ¥¸öÁ£×Ó×îÓÅÊÊÓ¦¶È
-	private BigDecimal pbest[];
+    // å±æ€§é€‚åº”åº¦å€¼
+    // private BigDecimal fit_attr[];
 
-	// ÖÖÈºÁ£×Ó×îÓÅÎ»ÖÃ
-	private BigInteger xgbest;
+    // æ–¹æ³•é€‚åº”åº¦å€¼
+    // private BigDecimal fit_method[];
 
-	// ÖÖÈºÁ£×Ó×îÓÅÊÊÓ¦¶È
-	private BigDecimal gbest;
-	
-	// ËÙ¶È¹ßĞÔÈ¨ÖØ
-	private BigDecimal w;
-	
-	// ËÙ¶È²ÎÊı
-	private int k;
-	private BigDecimal C1;
-	private BigDecimal C2;
-	
-	// ÊÊÓ¦¶È¼ÆËãÆ÷
-	IFitnessCalculator fitnessCalculator;
+    // å•ä¸ªç²’å­æœ€ä¼˜ä½ç½®
+    private BigInteger xpbest[];
 
-	public PSO(PSOData psoData) {
-		this.psoData = psoData;
-		
-		this.particleNumber = psoData.getParticleNumber();
-		this.iterations 	= psoData.getIterations();
-		this.WMIN 			= psoData.getWMIN();
-		this.WMAX 			= psoData.getWMAX();
-		this.VMAX 			= psoData.getVMAX();
-		this.fitnessCalculator 		= psoData.getFitness();
-		
-		this.x 				= new BigInteger[particleNumber];
-		this.v 				= new BigInteger[particleNumber];
-		for (int i = 0; i < particleNumber; i++) {
-			x[i] = new BigDecimal(WMAX).multiply(new BigDecimal(Math.random())).toBigInteger().add(WMIN);
-			
-//			System.out.println(i + "\t" + x[i]);
-			psoData.addPosition(i, 0, x[i]);
-			
-			v[i] = new BigDecimal(VMAX).multiply(new BigDecimal(Math.random())).toBigInteger();
-		}
-		
-		this.fit 			= new BigDecimal[particleNumber];
-//		this.fit_attr 		= new BigDecimal[particleNumber];
-//		this.fit_method 	= new BigDecimal[particleNumber];
-		this.pbest 			= new BigDecimal[particleNumber];
-		this.xpbest 		= new BigInteger[particleNumber];
-		for (int i = 0; i < particleNumber; i++) {
-			pbest[i] 	= new BigDecimal("10000");
-			xpbest[i] 	= new BigInteger("0");
-		}
-		this.gbest 			= new BigDecimal("10000");
-		this.xgbest 		= new BigInteger("0");
+    // å•ä¸ªç²’å­æœ€ä¼˜é€‚åº”åº¦
+    private BigDecimal pbest[];
 
-		this.k = 1;
-		this.C1 = new BigDecimal("2");
-		this.C2 = new BigDecimal("2");
-	}
+    // ç§ç¾¤ç²’å­æœ€ä¼˜ä½ç½®
+    private BigInteger xgbest;
 
-	// Á£×ÓÈº¼ÆËã
-	public void doPSO() {
-		
-		for ( ; k <= iterations; k++) {
-			w = new BigDecimal(0.9 - k * (0.9 - 0.4) / iterations);
-			
-			
-//			System.out.print(k + "\t");
-			// ÊÊÓ¦¶È¼ÆËã
-			{
-				for (int i = 0; i < particleNumber; i++) {
-					
-					// ¼ÆËãµ¥¸öÁ£×ÓÔÚ¸ÃÎ»ÖÃµÄÊÊÓ¦¶È
-					IFitness iFit 	= fitnessCalculator.computeFitness(x[i]);
-					StupComplexityFitness scFit = (StupComplexityFitness) iFit;
-					fit[i] 			= scFit.getFitness();
-//					fit_attr[i] 	= scFit.getAttributeFitness();
-//					fit_method[i] 	= scFit.getMethodFitness();
-					
-//					System.out.print(i + "\t" + x[i] + "\t" + fit[i] + "\t");
-					
-					// ¼ÇÂ¼Î»ÖÃºÍÊÊÓ¦¶ÈÖµ
-					psoData.addPosition(i, k, x[i]);
-					psoData.addFitness(i, k, fit[i]);
-					
-					// µ¥¸öÁ£×Ó×îÓÅÊÊÓ¦¶È£¬×îÓÅÎ»ÖÃ
-					if (fit[i].compareTo(pbest[i]) == -1) {
-						pbest[i] 	= fit[i];
-						xpbest[i] 	= x[i];
-					}
-					
-					// ÖÖÈºÁ£×Ó×îÓÅÊÊÓ¦¶È£¬×îÓÅÎ»ÖÃ
-					if (pbest[i].compareTo(gbest) == -1) {
-						gbest 	= pbest[i];
-						xgbest 	= xpbest[i];
-					}
-					
-//					System.out.print(gbest + "\t" + xgbest + "\t");
-				}
-			}
-//			System.out.print("\n");
-			
-			
-			// ËÙ¶È¼ÆËãºÍÎ»ÖÃ¼ÆËã
-			{
-				for (int i = 0; i < particleNumber; i++) {
-					v[i] = w.multiply(new BigDecimal(v[i]))
-							.add(C1.multiply(new BigDecimal(Math.random())).multiply(new BigDecimal(xpbest[i].subtract(x[i]))))
-							.add(C2.multiply(new BigDecimal(Math.random())).multiply(new BigDecimal(xgbest.subtract(x[i]))))
-							.toBigInteger();
-					
-					if (v[i].compareTo(VMAX) == 1) {
-						v[i] = VMAX;
-					}
-					
-					x[i] = x[i].add(v[i]);
-					if (x[i].compareTo(WMAX) == 1) {
-						x[i] = WMAX;
-					} else if (x[i].compareTo(WMIN) == -1) {
-						x[i] = WMIN;
-					}
-				}
-			}
-		}
-		
-		System.out.println("gbest: \t" + gbest);
-		System.out.println("xgbest: \t" + xgbest);
-		
-		System.out.println("size of AttrDependencies" + ((StupComplexityFitnessCalculator) fitnessCalculator).getNumberOfAttrDependency(xgbest));
-		System.out.println("size of MethodDependencies" + ((StupComplexityFitnessCalculator) fitnessCalculator).getNumberOfMethodDependency(xgbest));
-		System.out.println("size of AllDependencies" + ((StupComplexityFitnessCalculator) fitnessCalculator).getNumberOfAllDependency2(xgbest));
-		
-		BigDecimal fit_attr 	= ((StupComplexityFitnessCalculator) fitnessCalculator).computeAttributeFitness(xgbest);
-		BigDecimal fit_method 	= ((StupComplexityFitnessCalculator) fitnessCalculator).computeMethodFitness(xgbest);
-		
-		System.out.println("fit_attr: \t" + fit_attr);
-		System.out.println("fit_method: \t" + fit_method);
-		
-		List<SourceClassInfo> scis = null;
-		scis = ((StupComplexityFitnessCalculator) fitnessCalculator).decode(xgbest);
-		for (SourceClassInfo sci : scis) {
-			System.out.println(sci.className());			
-		}
+    // ç§ç¾¤ç²’å­æœ€ä¼˜é€‚åº”åº¦
+    private BigDecimal gbest;
 
-	}
-	
-	/*public static void main(String[] args) {
-		// ²ÎÊı£ºÖÖÈºÊı£¬µü´úÊı£¬Î»ÖÃÇø¼ä×îĞ¡Öµ£¬Î»ÖÃÇø¼ä×î´óÖµ£¬ËÙ¶È×î´óÖµ
-		PSO pso = new PSO(50, 5, new BigInteger("1"), new BigInteger("100"), new BigInteger("3"), null);
-		pso.doPSO();
-	}*/
+    // é€Ÿåº¦æƒ¯æ€§æƒé‡
+    private BigDecimal w;
+
+    // é€Ÿåº¦å‚æ•°
+    private int k;
+    private BigDecimal C1;
+    private BigDecimal C2;
+
+    // é€‚åº”åº¦è®¡ç®—å™¨
+    IFitnessCalculator fitnessCalculator;
+
+    public PSO(PSOData psoData) {
+        this.psoData = psoData;
+
+        this.particleNumber = psoData.getParticleNumber();
+        this.iterations = psoData.getIterations();
+        this.WMIN = psoData.getWMIN();
+        this.WMAX = psoData.getWMAX();
+        this.VMAX = psoData.getVMAX();
+        this.fitnessCalculator = psoData.getFitness();
+
+        this.x = new BigInteger[particleNumber];
+        this.v = new BigInteger[particleNumber];
+        for (int i = 0; i < particleNumber; i++) {
+            x[i] = new BigDecimal(WMAX).multiply(new BigDecimal(Math.random())).toBigInteger().add(WMIN);
+
+            // System.out.println(i + "\t" + x[i]);
+            psoData.addPosition(i, 0, x[i]);
+
+            v[i] = new BigDecimal(VMAX).multiply(new BigDecimal(Math.random())).toBigInteger();
+        }
+
+        this.fit = new BigDecimal[particleNumber];
+        // this.fit_attr = new BigDecimal[particleNumber];
+        // this.fit_method = new BigDecimal[particleNumber];
+        this.pbest = new BigDecimal[particleNumber];
+        this.xpbest = new BigInteger[particleNumber];
+        for (int i = 0; i < particleNumber; i++) {
+            pbest[i] = new BigDecimal("10000");
+            xpbest[i] = new BigInteger("0");
+        }
+        this.gbest = new BigDecimal("10000");
+        this.xgbest = new BigInteger("0");
+
+        this.k = 1;
+        this.C1 = new BigDecimal("2");
+        this.C2 = new BigDecimal("2");
+    }
+
+    // ç²’å­ç¾¤è®¡ç®—
+    public void doPSO() {
+
+        for (; k <= iterations; k++) {
+            w = new BigDecimal(0.9 - k * (0.9 - 0.4) / iterations);
+
+            // System.out.print(k + "\t");
+            // é€‚åº”åº¦è®¡ç®—
+            {
+                for (int i = 0; i < particleNumber; i++) {
+
+                    // è®¡ç®—å•ä¸ªç²’å­åœ¨è¯¥ä½ç½®çš„é€‚åº”åº¦
+                    IFitness iFit = fitnessCalculator.computeFitness(x[i]);
+                    StupComplexityFitness scFit = (StupComplexityFitness) iFit;
+                    fit[i] = scFit.getFitness();
+                    // fit_attr[i] = scFit.getAttributeFitness();
+                    // fit_method[i] = scFit.getMethodFitness();
+
+                    // System.out.print(i + "\t" + x[i] + "\t" + fit[i] + "\t");
+
+                    // è®°å½•ä½ç½®å’Œé€‚åº”åº¦å€¼
+                    psoData.addPosition(i, k, x[i]);
+                    psoData.addFitness(i, k, fit[i]);
+
+                    // å•ä¸ªç²’å­æœ€ä¼˜é€‚åº”åº¦ï¼Œæœ€ä¼˜ä½ç½®
+                    if (fit[i].compareTo(pbest[i]) == -1) {
+                        pbest[i] = fit[i];
+                        xpbest[i] = x[i];
+                    }
+
+                    // ç§ç¾¤ç²’å­æœ€ä¼˜é€‚åº”åº¦ï¼Œæœ€ä¼˜ä½ç½®
+                    if (pbest[i].compareTo(gbest) == -1) {
+                        gbest = pbest[i];
+                        xgbest = xpbest[i];
+                    }
+
+                    // System.out.print(gbest + "\t" + xgbest + "\t");
+                }
+            }
+            // System.out.print("\n");
+
+            // é€Ÿåº¦è®¡ç®—å’Œä½ç½®è®¡ç®—
+            {
+                for (int i = 0; i < particleNumber; i++) {
+                    v[i] = w.multiply(new BigDecimal(v[i]))
+                            .add(C1.multiply(new BigDecimal(Math.random()))
+                                    .multiply(new BigDecimal(xpbest[i].subtract(x[i]))))
+                            .add(C2.multiply(new BigDecimal(Math.random()))
+                                    .multiply(new BigDecimal(xgbest.subtract(x[i]))))
+                            .toBigInteger();
+
+                    if (v[i].compareTo(VMAX) == 1) {
+                        v[i] = VMAX;
+                    }
+
+                    x[i] = x[i].add(v[i]);
+                    if (x[i].compareTo(WMAX) == 1) {
+                        x[i] = WMAX;
+                    } else if (x[i].compareTo(WMIN) == -1) {
+                        x[i] = WMIN;
+                    }
+                }
+            }
+        }
+
+        System.out.println("gbest: \t" + gbest);
+        System.out.println("xgbest: \t" + xgbest);
+
+        System.out.println("size of AttrDependencies"
+                + ((StupComplexityFitnessCalculator) fitnessCalculator).getNumberOfAttrDependency(xgbest));
+        System.out.println("size of MethodDependencies"
+                + ((StupComplexityFitnessCalculator) fitnessCalculator).getNumberOfMethodDependency(xgbest));
+        System.out.println("size of AllDependencies"
+                + ((StupComplexityFitnessCalculator) fitnessCalculator).getNumberOfAllDependency2(xgbest));
+
+        BigDecimal fit_attr = ((StupComplexityFitnessCalculator) fitnessCalculator).computeAttributeFitness(xgbest);
+        BigDecimal fit_method = ((StupComplexityFitnessCalculator) fitnessCalculator).computeMethodFitness(xgbest);
+
+        System.out.println("fit_attr: \t" + fit_attr);
+        System.out.println("fit_method: \t" + fit_method);
+
+        List<SourceClassInfo> scis = null;
+        scis = ((StupComplexityFitnessCalculator) fitnessCalculator).decode(xgbest);
+        for (SourceClassInfo sci : scis) {
+            System.out.println(sci.className());
+        }
+
+    }
+
+    /*
+     * public static void main(String[] args) { //
+     * å‚æ•°ï¼šç§ç¾¤æ•°ï¼Œè¿­ä»£æ•°ï¼Œä½ç½®åŒºé—´æœ€å°å€¼ï¼Œä½ç½®åŒºé—´æœ€å¤§å€¼ï¼Œé€Ÿåº¦æœ€å¤§å€¼ PSO pso = new PSO(50, 5, new
+     * BigInteger("1"), new BigInteger("100"), new BigInteger("3"), null);
+     * pso.doPSO(); }
+     */
 
 }

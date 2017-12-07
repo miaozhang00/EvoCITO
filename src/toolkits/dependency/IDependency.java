@@ -1,27 +1,27 @@
-package toolkits.dependency;
+锘縫ackage toolkits.dependency;
 
 public interface IDependency {
-	
-	/*
-	 * 获得父依赖方
-	 */
-	public String getParentClassName();
-	
-	/*
-	 * 获得子依赖方
-	 */
-	public String getChildClassName();
-	
-	/*
-	 * 获得依赖类型
-	 */
-	public String getType();
-	
-	/*
-	 * 判断子依赖方是否是succ
-	 */
-	public boolean isSucc();
-	
-	public String toDump();
-	
+
+    /*
+     * 鑾峰緱鐖朵緷璧栨柟
+     */
+    public String getParentClassName();
+
+    /*
+     * 鑾峰緱瀛愪緷璧栨柟
+     */
+    public String getChildClassName();
+
+    /*
+     * 鑾峰緱渚濊禆绫诲瀷
+     */
+    public String getType();
+
+    /*
+     * 鍒ゆ柇瀛愪緷璧栨柟鏄惁鏄痵ucc
+     */
+    public boolean isSucc();
+
+    public String toDump();
+
 }

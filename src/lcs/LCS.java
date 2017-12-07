@@ -1,97 +1,96 @@
-package lcs;
+ï»¿package lcs;
 
 public class LCS {
 
-	public static int[][] genLCS(String str1, String str2){
-		
-		int[][] opt = new int[str2.length()+1][str1.length()+1];
-		int[][] temp = new int[str2.length()+1][str1.length()+1];
-		
-		for(int i=0; i <= str2.length(); i++){
-			opt[i][0] = 0;
-		}
-		
-		for(int j=0; j <= str1.length(); j++){
-			opt[0][j] = 0;
-		}
-		
-		for(int j=1; j <= str1.length(); j++){
-			for(int i=1; i <= str2.length(); i++){
-				if(str2.charAt(i-1)== str1.charAt(j-1)){
-					opt[i][j] = opt[i-1][j-1]+1;
-					temp[i][j] = 1;
-				}else{
-					opt[i][j] = ( opt[i-1][j] >= opt[i][j-1] ? opt[i-1][j] : opt[i][j-1] );
-					temp[i][j] = ( opt[i-1][j] >= opt[i][j-1] ? 0 : -1);
-				}
-			}
-		}
-		
-		return temp;
-	}
-	
-	public static void printLCS(int[][] b, String str1, int i, int j){
-		
-		LinkLCS linkLCS = new LinkLCS();
-		if(i==0 || j==0){
-			return;
-		}
-		if(b[i][j] == 1){			
-			linkLCS.addFirstNode(str1.charAt(j-1));
-			printLCS(b, str1, i-1, j-1); 					
-		}else if(b[i][j] == 0){
-			printLCS(b, str1, i-1, j);
-		}else
-			printLCS(b, str1, i, j-1);
-		
-		linkLCS.displayAllNodes();  
-	}
-	
-	public static void main(String[] args) {  
-		  
-        String str1 = new String("abcbdab");  
-        String str2 = new String("bdcabad");  
-        
-        int [][] temp = genLCS(str1, str2);              
-        printLCS(temp,str1,str1.length(),str2.length() );
-    }  
+    public static int[][] genLCS(String str1, String str2) {
 
+        int[][] opt = new int[str2.length() + 1][str1.length() + 1];
+        int[][] temp = new int[str2.length() + 1][str1.length() + 1];
 
-	public static class Node {  
-		protected Node next; //Ö¸ÕëÓò  
-		protected char data;//Êı¾İÓò  
-      
-		public Node( char data) {  
-          this.data = data;  
-		}  
-      
-		//ÏÔÊ¾´Ë½Úµã  
-		public void display() {  
-			System.out.print(data + " ");  
-		}  
-	}  
-	
-	public static class LinkLCS {  
-		public Node first; // ¶¨ÒåÒ»¸öÍ·½áµã  
-		private int pos = 0;// ½ÚµãµÄÎ»ÖÃ  
- 
-		public LinkLCS() {  
-          this. first = null;  
-		}  
- 
-		// ²åÈëÒ»¸öÍ·½Úµã  
-		public void addFirstNode(char data) {  
-			Node node = new Node(data);  
-			node. next = first;  
-			first = node;  
-		}
-		
-		public void displayAllNodes() {  
-	          Node current = first;  
-	           while (current != null) {  
-	              current.display();  
-	              current = current. next;  
-	          }  
-	     }  
-	}
+        for (int i = 0; i <= str2.length(); i++) {
+            opt[i][0] = 0;
+        }
+
+        for (int j = 0; j <= str1.length(); j++) {
+            opt[0][j] = 0;
+        }
+
+        for (int j = 1; j <= str1.length(); j++) {
+            for (int i = 1; i <= str2.length(); i++) {
+                if (str2.charAt(i - 1) == str1.charAt(j - 1)) {
+                    opt[i][j] = opt[i - 1][j - 1] + 1;
+                    temp[i][j] = 1;
+                } else {
+                    opt[i][j] = (opt[i - 1][j] >= opt[i][j - 1] ? opt[i - 1][j] : opt[i][j - 1]);
+                    temp[i][j] = (opt[i - 1][j] >= opt[i][j - 1] ? 0 : -1);
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    public static void printLCS(int[][] b, String str1, int i, int j) {
+
+        LinkLCS linkLCS = new LinkLCS();
+        if (i == 0 || j == 0) {
+            return;
+        }
+        if (b[i][j] == 1) {
+            linkLCS.addFirstNode(str1.charAt(j - 1));
+            printLCS(b, str1, i - 1, j - 1);
+        } else if (b[i][j] == 0) {
+            printLCS(b, str1, i - 1, j);
+        } else
+            printLCS(b, str1, i, j - 1);
+
+        linkLCS.displayAllNodes();
+    }
+
+    public static void main(String[] args) {
+
+        String str1 = new String("abcbdab");
+        String str2 = new String("bdcabad");
+
+        int[][] temp = genLCS(str1, str2);
+        printLCS(temp, str1, str1.length(), str2.length());
+    }
+
+    public static class Node {
+        protected Node next; // æŒ‡é’ˆåŸŸ
+        protected char data;// æ•°æ®åŸŸ
+
+        public Node(char data) {
+            this.data = data;
+        }
+
+        // æ˜¾ç¤ºæ­¤èŠ‚ç‚¹
+        public void display() {
+            System.out.print(data + " ");
+        }
+    }
+
+    public static class LinkLCS {
+        public Node first; // å®šä¹‰ä¸€ä¸ªå¤´ç»“ç‚¹
+        private int pos = 0;// èŠ‚ç‚¹çš„ä½ç½®
+
+        public LinkLCS() {
+            this.first = null;
+        }
+
+        // æ’å…¥ä¸€ä¸ªå¤´èŠ‚ç‚¹
+        public void addFirstNode(char data) {
+            Node node = new Node(data);
+            node.next = first;
+            first = node;
+        }
+
+        public void displayAllNodes() {
+            Node current = first;
+            while (current != null) {
+                current.display();
+                current = current.next;
+            }
+        }
+    }
 }

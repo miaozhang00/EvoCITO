@@ -1,4 +1,4 @@
-package ga;
+ï»¿package ga;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,366 +11,361 @@ import data.DataCenter;
 import toolkits.SourceClassInfo;
 import toolkits.StupComplexity;
 
-public class Populations  {
+public class Populations {
 
-	private List<Chromosome> populations;			 //ÖÖÈº±íÊ¾
-	private List<SourceClassInfo> listOfGA;			 //ÖÖÈºĞÅÏ¢
-	private int POPNUM;                              //ÖÖÈº´óĞ¡
-	private double pc = 0.5;                         //½»²æ¸ÅÂÊ
-	private double pm = 0.015;                       //±äÒì¸ÅÂÊ
-	private int tournamentSize = 5;                  //½õ±êÈüÑ¡Ôñ¸öÊı
-	private boolean elitism = true;                  //ÊÇ·ñ±£ÁôÉÏÒ»´úµÄ×îÓÅ¸öÌå
-	
-	public Populations(){
-		this.populations = new ArrayList<Chromosome>();
-		
-	}
-	public Populations(List<Chromosome> populations){
-		this.populations = populations;
-	}
-	
-	public Populations(int populationSize, List<SourceClassInfo> listOfGA, boolean initialise){
-		this.POPNUM = populationSize;
-		this.listOfGA = listOfGA;
-		if(!initialise){
-			initialPops(populationSize, listOfGA);
-	
-		}		
-	}
+    private List<Chromosome> populations; // ç§ç¾¤è¡¨ç¤º
+    private List<SourceClassInfo> listOfGA; // ç§ç¾¤ä¿¡æ¯
+    private int POPNUM; // ç§ç¾¤å¤§å°
+    private double pc = 0.5; // äº¤å‰æ¦‚ç‡
+    private double pm = 0.015; // å˜å¼‚æ¦‚ç‡
+    private int tournamentSize = 5; // é”¦æ ‡èµ›é€‰æ‹©ä¸ªæ•°
+    private boolean elitism = true; // æ˜¯å¦ä¿ç•™ä¸Šä¸€ä»£çš„æœ€ä¼˜ä¸ªä½“
 
-	public Populations(int populationSize, Chromosome chromos, boolean initialise){
-		this.POPNUM = populationSize;
-		this.listOfGA = chromos.getListOfSCI();
-		if(!initialise){
-			initialPops(populationSize, listOfGA);
-			
-		}		
-	}
-	
-	/**
-	 * ³õÊ¼»¯Ò»×éÈ¾É«Ìå
-	 * Ò»´úÖÖÈº
-	 */
-	public void initialPops(int POPNUM, List<SourceClassInfo> listOfGA){
-		
-		this.populations = new ArrayList<Chromosome>();
-		for(int i=0; i<POPNUM; i++){	
-			Chromosome chromos = new Chromosome(listOfGA,false);
-			
-			populations.add(chromos);
-		}
-		
-	}
-	
-   /**
-    * Ã¿´úÖÖÈº½ø»¯
-    */
-	public Populations evolvePops(Populations oldPopulations){
-				
-		Populations newPopulations = new Populations();
-		POPNUM = oldPopulations.getSizeOfPopulations();
-		
-		//±£ÁôÉÏÒ»´úµÄÓÅÁ¼¸öÌå		
-		int offset = 0;
-		if(elitism){						
-			newPopulations.setChromos(0,oldPopulations.getBest(oldPopulations));			
-			offset = 1;
-		}
-		//System.out.println("ÉÏÒ»´úµÄ×îÓÅÖµ"+newPopulations.getBestFitness(newPopulations));	
-		//È·¶¨ÖÖÈºÖĞ½»²æµÄ¸öÌåÊı
-		int crossnum = (int)(POPNUM * pc);
-		if(crossnum%2!=0){
-			crossnum++;                      
-		}
-		
-		//Ñ¡ÔñÓÃÓÚ½»²æµÄ¸öÌå²¢Ö´ĞĞ½»²æ²Ù×÷
-		List<Chromosome> sortpopulations = sortPops(oldPopulations);				
-		for(int i=0; i < crossnum; i++){
-			Chromosome parent1 = sortpopulations.get(i);								
-			i++;			
-			Chromosome parent2 = tournamentSelection(sortpopulations);
-						
-			List<Chromosome> children = crossover(parent1, parent2);	
-			newPopulations.setChromos(offset, children.get(0));
-			//Test
-			//System.out.println("----------µÚ"+i+"×é½»²æ½á¹û-------");//
-			//System.out.println("½»²æ¸öÌåone"+children.get(0).calculateFitness(children.get(0).getListOfSCI()));//
-			//System.out.println("½»²æ¸öÌåtwo"+children.get(1).calculateFitness(children.get(1).getListOfSCI()));//
-			offset++;
-			newPopulations.setChromos(offset, children.get(1));
-			offset++;
-		}
-			//System.out.println("½»²æºóµÄ×îÓÅÖµ"+newPopulations.getBestFitness(newPopulations));			
-		
-		//È·¶¨ÖÖÈºÖĞ±äÒìµÄ¸öÌåÊı
-		int mutatenum = (int)(POPNUM * pm);
-		
-		//Ñ¡ÔñÓÃÓÚ±äÒìµÄ¸öÌå²¢Ö´ĞĞ±äÒì²Ù×÷
-		for(int j=0; j < mutatenum; j++){
-			
-			Chromosome parent = sortpopulations.get(sortpopulations.size()-1-j);						
-			Chromosome child = mutate(parent);
-			newPopulations.setChromos(offset, child);
-			offset++;
-		}
-		  //System.out.println("±äÒìºóµÄ×îÓÅÖµ"+newPopulations.getBestFitness(newPopulations));
-		 // newPopulations = FullOrEmpty(oldPopulations, newPopulations);
-		  //System.out.println("======ĞÂ´úÖÖÈºÉú³É====");//
-		 // int count = 0;//
-		 // for(Chromosome newc :newPopulations.getListOfChromosome()){
-			 // System.out.println("¸Ã¸öÌåÊÊÓ¦¶ÈÎª"+ newc.calculateFitness(newc.getListOfSCI()));
-			 // count++;
-		//  }
-		 // System.out.println("ĞÂ´úÖÖÈº¸öÌåÊıÎª"+newPopulations.getSizeOfPopulations());
-		  //return newPopulations;
-		return FullOrEmpty(oldPopulations, newPopulations);
-	}
+    public Populations() {
+        this.populations = new ArrayList<Chromosome>();
 
-	/**
-	 * ½õ±êÈüÑ¡Ôñ
-	 * Ã¿×é5¸ö¸öÌå
-	 */
-	/*
-	public Chromosome tournamentSelection(Populations population){
-		Populations tournament = new Populations(tournamentSize,population.getChromos(0),false);
-		for(int i=0; i < tournamentSize; i++){
-			int randomId = (int)(Math.random() * population.getSizeOfPopulations());
-			tournament.setChromos(i,population.getChromos(randomId));
-		}
-		Chromosome selected = tournament.getBest(tournament);
-		return selected;
-	}
-	*/
-	public Chromosome tournamentSelection(List<Chromosome> list_chromos){
-		Populations tournament = new Populations();
-		for(int i=0; i < tournamentSize; i++){
-			int randomId = (int)(Math.random()* list_chromos.size());
-			tournament.setChromos(i, list_chromos.get(randomId));
-		}
-		Chromosome selected = tournament.getAttrBest(tournament);		
-		return selected;
-	}
-	
-	/**
-	 * ½»²æ²Ù×÷
-	 * ½»²æ¸ÅÂÊÎªpc
-	 */
-	public List<Chromosome> crossover(Chromosome parent1, Chromosome parent2){
-		
-		//children·µ»ØÉú³ÉµÄÁ½¸ö×Ó´úÈ¾É«Ìå
-		List<Chromosome> children = new ArrayList<Chromosome>();
-		
-		//Ëæ»úÉú³É½»²æµã
-		Random random = new Random();
-		int startpos, endpos = 0;
-		startpos = random.nextInt(parent1.getSizeOfChromos());
-		
-		do{
-			endpos = random.nextInt(parent2.getSizeOfChromos());   
-		}while(endpos == startpos);
-		if(startpos > endpos){
-			int temp = startpos;
-			startpos = endpos;
-			endpos = temp;
-		}
-		
-		//»ñÈ¡½»²æµã»ùÒò
-		SourceClassInfo gene_start_p1 = parent1.getGene(startpos);
-		SourceClassInfo gene_end_p1 = parent1.getGene(endpos);
-		SourceClassInfo gene_start_p2 = parent2.getGene(startpos);
-		SourceClassInfo gene_end_p2 = parent2.getGene(endpos);
-		
-		//Éú³ÉĞÂµÄ×Ó´ú¸öÌå		
-		List<SourceClassInfo> child1_list = new ArrayList<SourceClassInfo>();
-		List<SourceClassInfo> child2_list = new ArrayList<SourceClassInfo>();
-		
-		for(int i=0; i < parent1.getSizeOfChromos(); i++){
-			if(!(parent1.getGeneName(i).equals(parent2.getGeneName(startpos)))
-					&& !(parent1.getGeneName(i).equals(parent2.getGeneName(endpos))) ){
-			child1_list.add(parent1.getGene(i));			
-			}
-		}
-		child1_list.add(startpos, gene_start_p2);
-		child1_list.add(endpos, gene_end_p2);
-		Chromosome child1 = new Chromosome(child1_list,true);		
-		//System.out.println("");//
+    }
 
-		for(int i=0; i < parent2.getSizeOfChromos(); i++){
-			if(!(parent2.getGeneName(i).equals(parent1.getGeneName(startpos)))
-					&& !(parent2.getGeneName(i).equals(parent1.getGeneName(endpos))) ){
-			child2_list.add(parent2.getGene(i));			
-			}
-		}		
-		child2_list.add(startpos, gene_start_p1);
-		child2_list.add(endpos, gene_end_p1);
-		Chromosome child2 = new Chromosome(child2_list,true);		
-		//Chromosome child2 = new Chromosome(child2_list);
-		//child2.setGene(startpos, gene_start_p1);
-		//child2.setGene(endpos, gene_end_p1);
-		
-		children.add(child1);
-		children.add(child2);
-		
-		return children;
-	}
-	
-	/**
-	 * ±äÒì²Ù×÷
-	 * ±äÒì¸ÅÂÊÎªpm
-	 */
-	public Chromosome mutate(Chromosome parent){
-				
-		//Ëæ»úÉú³É½»²æµã
-		Random random = new Random();
-		int startpos, endpos = 0;
-		startpos = random.nextInt(parent.getSizeOfChromos());
-		do{
-			endpos = random.nextInt(parent.getSizeOfChromos());   
-		}while(endpos == startpos);
-		if(startpos > endpos){
-			int temp = startpos;
-			startpos = endpos;
-			endpos = temp;
-		}
-		
-		//»ñÈ¡±äÒìµã»ùÒò
-		SourceClassInfo gene_start = parent.getGene(startpos);
-		SourceClassInfo gene_end = parent.getGene(endpos);
-		
-		//Éú³ÉĞÂµÄ×Ó´ú¸öÌå		
-		List<SourceClassInfo> child_list = new ArrayList<SourceClassInfo>();
-		for(int i=0; i < parent.getSizeOfChromos(); i++){
-			if(i != startpos && i != endpos ){
-				child_list.add(parent.getGene(i));			
-				}
-			}		
-		//Chromosome child = new Chromosome(child_list,true);		
-		//child.setGene(startpos, gene_end);
-		//child.setGene(endpos, gene_start);
-		
-		child_list.add(startpos, gene_end);
-		child_list.add(endpos, gene_start);
-		Chromosome child = new Chromosome(child_list,true);		
-		
-		return child;
-	}
-	
-	/**
-	 * ÅĞ¶ÏÖÖÈºÂú»¹ÊÇ¿Õ
-	 * ÈôÂú£¬É¾³ı²¿·Ö¸öÌå£»
-	 * Èô¿Õ£¬Ôö¼Ó¸¸´úÓÅÁ¼¸öÌå
-	 */
-	public Populations FullOrEmpty(Populations oldPopulations, Populations newPopulations){
+    public Populations(List<Chromosome> populations) {
+        this.populations = populations;
+    }
 
-		int numofnew = newPopulations.getSizeOfPopulations();
-		int numofold = oldPopulations.getSizeOfPopulations();
-		
-		if(numofnew > numofold){
-			for(int i=0; i < (numofnew - numofold); i++){
-				int random = (int)(Math.random() * (numofold-1))+1;
-				newPopulations.removeChromos(random);				
-			}
-		}
-		if(numofnew < numofold){
-			for(int i=1; i <= (numofold - numofnew); i++){
-				int ranId = (int)(Math.random()* oldPopulations.getSizeOfPopulations());
-				newPopulations.setChromos(0,sortPops(oldPopulations).get(ranId));				
-			}
-		}
-	
-		return newPopulations;
-		
-	}
-	
-	/**
-	 * ¸ù¾İ¸öÌåÊÊÓ¦¶ÈÖµ£¬¶ÔÖÖÈº¸öÌå½øĞĞÅÅĞò£¬ÓÉÊÊÓ¦¶È´ÓĞ¡µ½´ó
-	 */
-	 public List<Chromosome> sortPops(Populations population){
-		 
-		 List<Chromosome> sortpopulations = population.getListOfChromosome();				     
-		 Collections.sort(sortpopulations);
-		 return sortpopulations;
-	 }
+    public Populations(int populationSize, List<SourceClassInfo> listOfGA, boolean initialise) {
+        this.POPNUM = populationSize;
+        this.listOfGA = listOfGA;
+        if (!initialise) {
+            initialPops(populationSize, listOfGA);
 
-	/**
-	 * Ñ°ÕÒ×îÓÅ¸öÌå£¬²¢½«Æä¼ÇÂ¼ÏÂÀ´
-	 */
-	 public Chromosome getBest(Populations population){
-		Chromosome bestchromos = new Chromosome();
-		List<Chromosome> sortpopulations = sortPops(population);
-		bestchromos = sortpopulations.get(0);
-		return bestchromos;
-	}
-	 
-	 public Chromosome getAttrBest(Populations population){
-		 Chromosome best_attr_chromos = new Chromosome();
-		 List<Chromosome> sortpopulations = sortPops(population);
-		 best_attr_chromos = sortpopulations.get(0);
-		 return best_attr_chromos;
-	 }
-	
-	 /**
-	  * Ñ°ÕÒ×îÓÅÊÊÓ¦¶ÈÖµ
-	  */
-	 public BigDecimal getBestFitness(Populations population){
-		 Chromosome best_chromos = sortPops(population).get(0);
-		 BigDecimal best_fitness = best_chromos.calculateFitness(best_chromos.getListOfSCI());
-		 return best_fitness;
-	 }
-	 
-	 public double getBestAttrFitness(Populations population){
-		 Chromosome best_attr_chromos = sortPops(population).get(0);
-		 double best_attr_fitness = best_attr_chromos.calculateAttrFitness(best_attr_chromos.getListOfSCI());
-		 return best_attr_fitness;
-	 }
-	/**
-	 * Ñ°ÕÒ×î²î¸öÌå£¬²¢½«Æä¼ÇÂ¼ÏÂÀ´
-	 */
-	public Chromosome getWorst(Populations population){
-		Chromosome worstchromos = new Chromosome();
-		List<Chromosome> sortpopulations = sortPops(population);
-		worstchromos = sortpopulations.get(getSizeOfPopulations()-1);
-		return worstchromos;
-	}	
-	
-	/**
-	 * Ñ°ÕÒ×î²îÊÊÓ¦¶ÈÖµ
-	 */
-	public BigDecimal getWorstFitness(Populations population){
-		Chromosome worst_chromos = sortPops(population).get(getSizeOfPopulations()-1);
-		BigDecimal worst_fitness = worst_chromos.calculateFitness(worst_chromos.getListOfSCI());
-		return worst_fitness;
-	}
-	
-	public void setChromos(int offset, Chromosome chromos){
+        }
+    }
 
-			this.populations.add(offset, chromos);
-		//this.getListOfChromosome().add(offset, chromos);
-	}
-	
-	public Chromosome getChromos(int offset){
-		
-		return this.populations.get(offset);
-	}
-	
-	public void removeChromos(int offset){
-		
-		this.populations.remove(offset);
-	}
-	
-	public int getSizeOfPopulations(){
-		
-		return this.populations.size();
-	}
+    public Populations(int populationSize, Chromosome chromos, boolean initialise) {
+        this.POPNUM = populationSize;
+        this.listOfGA = chromos.getListOfSCI();
+        if (!initialise) {
+            initialPops(populationSize, listOfGA);
 
-	public List<Chromosome> getListOfChromosome(){
-		List<Chromosome> list_chrom = new ArrayList<Chromosome>();
-		//return this.populations;
-		for(int i=0; i<this.getSizeOfPopulations();i++){
-			Chromosome chrom = this.getChromos(i);
-			list_chrom.add(i,chrom);
-		}
-		return list_chrom;
-	}
-	
+        }
+    }
+
+    /**
+     * åˆå§‹åŒ–ä¸€ç»„æŸ“è‰²ä½“ ä¸€ä»£ç§ç¾¤
+     */
+    public void initialPops(int POPNUM, List<SourceClassInfo> listOfGA) {
+
+        this.populations = new ArrayList<Chromosome>();
+        for (int i = 0; i < POPNUM; i++) {
+            Chromosome chromos = new Chromosome(listOfGA, false);
+
+            populations.add(chromos);
+        }
+
+    }
+
+    /**
+     * æ¯ä»£ç§ç¾¤è¿›åŒ–
+     */
+    public Populations evolvePops(Populations oldPopulations) {
+
+        Populations newPopulations = new Populations();
+        POPNUM = oldPopulations.getSizeOfPopulations();
+
+        // ä¿ç•™ä¸Šä¸€ä»£çš„ä¼˜è‰¯ä¸ªä½“
+        int offset = 0;
+        if (elitism) {
+            newPopulations.setChromos(0, oldPopulations.getBest(oldPopulations));
+            offset = 1;
+        }
+        // System.out.println("ä¸Šä¸€ä»£çš„æœ€ä¼˜å€¼"+newPopulations.getBestFitness(newPopulations));
+        // ç¡®å®šç§ç¾¤ä¸­äº¤å‰çš„ä¸ªä½“æ•°
+        int crossnum = (int) (POPNUM * pc);
+        if (crossnum % 2 != 0) {
+            crossnum++;
+        }
+
+        // é€‰æ‹©ç”¨äºäº¤å‰çš„ä¸ªä½“å¹¶æ‰§è¡Œäº¤å‰æ“ä½œ
+        List<Chromosome> sortpopulations = sortPops(oldPopulations);
+        for (int i = 0; i < crossnum; i++) {
+            Chromosome parent1 = sortpopulations.get(i);
+            i++;
+            Chromosome parent2 = tournamentSelection(sortpopulations);
+
+            List<Chromosome> children = crossover(parent1, parent2);
+            newPopulations.setChromos(offset, children.get(0));
+            // Test
+            // System.out.println("----------ç¬¬"+i+"ç»„äº¤å‰ç»“æœ-------");//
+            // System.out.println("äº¤å‰ä¸ªä½“one"+children.get(0).calculateFitness(children.get(0).getListOfSCI()));//
+            // System.out.println("äº¤å‰ä¸ªä½“two"+children.get(1).calculateFitness(children.get(1).getListOfSCI()));//
+            offset++;
+            newPopulations.setChromos(offset, children.get(1));
+            offset++;
+        }
+        // System.out.println("äº¤å‰åçš„æœ€ä¼˜å€¼"+newPopulations.getBestFitness(newPopulations));
+
+        // ç¡®å®šç§ç¾¤ä¸­å˜å¼‚çš„ä¸ªä½“æ•°
+        int mutatenum = (int) (POPNUM * pm);
+
+        // é€‰æ‹©ç”¨äºå˜å¼‚çš„ä¸ªä½“å¹¶æ‰§è¡Œå˜å¼‚æ“ä½œ
+        for (int j = 0; j < mutatenum; j++) {
+
+            Chromosome parent = sortpopulations.get(sortpopulations.size() - 1 - j);
+            Chromosome child = mutate(parent);
+            newPopulations.setChromos(offset, child);
+            offset++;
+        }
+        // System.out.println("å˜å¼‚åçš„æœ€ä¼˜å€¼"+newPopulations.getBestFitness(newPopulations));
+        // newPopulations = FullOrEmpty(oldPopulations, newPopulations);
+        // System.out.println("======æ–°ä»£ç§ç¾¤ç”Ÿæˆ====");//
+        // int count = 0;//
+        // for(Chromosome newc :newPopulations.getListOfChromosome()){
+        // System.out.println("è¯¥ä¸ªä½“é€‚åº”åº¦ä¸º"+
+        // newc.calculateFitness(newc.getListOfSCI()));
+        // count++;
+        // }
+        // System.out.println("æ–°ä»£ç§ç¾¤ä¸ªä½“æ•°ä¸º"+newPopulations.getSizeOfPopulations());
+        // return newPopulations;
+        return FullOrEmpty(oldPopulations, newPopulations);
+    }
+
+    /**
+     * é”¦æ ‡èµ›é€‰æ‹© æ¯ç»„5ä¸ªä¸ªä½“
+     */
+    /*
+     * public Chromosome tournamentSelection(Populations population){
+     * Populations tournament = new
+     * Populations(tournamentSize,population.getChromos(0),false); for(int i=0;
+     * i < tournamentSize; i++){ int randomId = (int)(Math.random() *
+     * population.getSizeOfPopulations());
+     * tournament.setChromos(i,population.getChromos(randomId)); } Chromosome
+     * selected = tournament.getBest(tournament); return selected; }
+     */
+    public Chromosome tournamentSelection(List<Chromosome> list_chromos) {
+        Populations tournament = new Populations();
+        for (int i = 0; i < tournamentSize; i++) {
+            int randomId = (int) (Math.random() * list_chromos.size());
+            tournament.setChromos(i, list_chromos.get(randomId));
+        }
+        Chromosome selected = tournament.getAttrBest(tournament);
+        return selected;
+    }
+
+    /**
+     * äº¤å‰æ“ä½œ äº¤å‰æ¦‚ç‡ä¸ºpc
+     */
+    public List<Chromosome> crossover(Chromosome parent1, Chromosome parent2) {
+
+        // childrenè¿”å›ç”Ÿæˆçš„ä¸¤ä¸ªå­ä»£æŸ“è‰²ä½“
+        List<Chromosome> children = new ArrayList<Chromosome>();
+
+        // éšæœºç”Ÿæˆäº¤å‰ç‚¹
+        Random random = new Random();
+        int startpos, endpos = 0;
+        startpos = random.nextInt(parent1.getSizeOfChromos());
+
+        do {
+            endpos = random.nextInt(parent2.getSizeOfChromos());
+        } while (endpos == startpos);
+        if (startpos > endpos) {
+            int temp = startpos;
+            startpos = endpos;
+            endpos = temp;
+        }
+
+        // è·å–äº¤å‰ç‚¹åŸºå› 
+        SourceClassInfo gene_start_p1 = parent1.getGene(startpos);
+        SourceClassInfo gene_end_p1 = parent1.getGene(endpos);
+        SourceClassInfo gene_start_p2 = parent2.getGene(startpos);
+        SourceClassInfo gene_end_p2 = parent2.getGene(endpos);
+
+        // ç”Ÿæˆæ–°çš„å­ä»£ä¸ªä½“
+        List<SourceClassInfo> child1_list = new ArrayList<SourceClassInfo>();
+        List<SourceClassInfo> child2_list = new ArrayList<SourceClassInfo>();
+
+        for (int i = 0; i < parent1.getSizeOfChromos(); i++) {
+            if (!(parent1.getGeneName(i).equals(parent2.getGeneName(startpos)))
+                    && !(parent1.getGeneName(i).equals(parent2.getGeneName(endpos)))) {
+                child1_list.add(parent1.getGene(i));
+            }
+        }
+        child1_list.add(startpos, gene_start_p2);
+        child1_list.add(endpos, gene_end_p2);
+        Chromosome child1 = new Chromosome(child1_list, true);
+        // System.out.println("");//
+
+        for (int i = 0; i < parent2.getSizeOfChromos(); i++) {
+            if (!(parent2.getGeneName(i).equals(parent1.getGeneName(startpos)))
+                    && !(parent2.getGeneName(i).equals(parent1.getGeneName(endpos)))) {
+                child2_list.add(parent2.getGene(i));
+            }
+        }
+        child2_list.add(startpos, gene_start_p1);
+        child2_list.add(endpos, gene_end_p1);
+        Chromosome child2 = new Chromosome(child2_list, true);
+        // Chromosome child2 = new Chromosome(child2_list);
+        // child2.setGene(startpos, gene_start_p1);
+        // child2.setGene(endpos, gene_end_p1);
+
+        children.add(child1);
+        children.add(child2);
+
+        return children;
+    }
+
+    /**
+     * å˜å¼‚æ“ä½œ å˜å¼‚æ¦‚ç‡ä¸ºpm
+     */
+    public Chromosome mutate(Chromosome parent) {
+
+        // éšæœºç”Ÿæˆäº¤å‰ç‚¹
+        Random random = new Random();
+        int startpos, endpos = 0;
+        startpos = random.nextInt(parent.getSizeOfChromos());
+        do {
+            endpos = random.nextInt(parent.getSizeOfChromos());
+        } while (endpos == startpos);
+        if (startpos > endpos) {
+            int temp = startpos;
+            startpos = endpos;
+            endpos = temp;
+        }
+
+        // è·å–å˜å¼‚ç‚¹åŸºå› 
+        SourceClassInfo gene_start = parent.getGene(startpos);
+        SourceClassInfo gene_end = parent.getGene(endpos);
+
+        // ç”Ÿæˆæ–°çš„å­ä»£ä¸ªä½“
+        List<SourceClassInfo> child_list = new ArrayList<SourceClassInfo>();
+        for (int i = 0; i < parent.getSizeOfChromos(); i++) {
+            if (i != startpos && i != endpos) {
+                child_list.add(parent.getGene(i));
+            }
+        }
+        // Chromosome child = new Chromosome(child_list,true);
+        // child.setGene(startpos, gene_end);
+        // child.setGene(endpos, gene_start);
+
+        child_list.add(startpos, gene_end);
+        child_list.add(endpos, gene_start);
+        Chromosome child = new Chromosome(child_list, true);
+
+        return child;
+    }
+
+    /**
+     * åˆ¤æ–­ç§ç¾¤æ»¡è¿˜æ˜¯ç©º è‹¥æ»¡ï¼Œåˆ é™¤éƒ¨åˆ†ä¸ªä½“ï¼› è‹¥ç©ºï¼Œå¢åŠ çˆ¶ä»£ä¼˜è‰¯ä¸ªä½“
+     */
+    public Populations FullOrEmpty(Populations oldPopulations, Populations newPopulations) {
+
+        int numofnew = newPopulations.getSizeOfPopulations();
+        int numofold = oldPopulations.getSizeOfPopulations();
+
+        if (numofnew > numofold) {
+            for (int i = 0; i < (numofnew - numofold); i++) {
+                int random = (int) (Math.random() * (numofold - 1)) + 1;
+                newPopulations.removeChromos(random);
+            }
+        }
+        if (numofnew < numofold) {
+            for (int i = 1; i <= (numofold - numofnew); i++) {
+                int ranId = (int) (Math.random() * oldPopulations.getSizeOfPopulations());
+                newPopulations.setChromos(0, sortPops(oldPopulations).get(ranId));
+            }
+        }
+
+        return newPopulations;
+
+    }
+
+    /**
+     * æ ¹æ®ä¸ªä½“é€‚åº”åº¦å€¼ï¼Œå¯¹ç§ç¾¤ä¸ªä½“è¿›è¡Œæ’åºï¼Œç”±é€‚åº”åº¦ä»å°åˆ°å¤§
+     */
+    public List<Chromosome> sortPops(Populations population) {
+
+        List<Chromosome> sortpopulations = population.getListOfChromosome();
+        Collections.sort(sortpopulations);
+        return sortpopulations;
+    }
+
+    /**
+     * å¯»æ‰¾æœ€ä¼˜ä¸ªä½“ï¼Œå¹¶å°†å…¶è®°å½•ä¸‹æ¥
+     */
+    public Chromosome getBest(Populations population) {
+        Chromosome bestchromos = new Chromosome();
+        List<Chromosome> sortpopulations = sortPops(population);
+        bestchromos = sortpopulations.get(0);
+        return bestchromos;
+    }
+
+    public Chromosome getAttrBest(Populations population) {
+        Chromosome best_attr_chromos = new Chromosome();
+        List<Chromosome> sortpopulations = sortPops(population);
+        best_attr_chromos = sortpopulations.get(0);
+        return best_attr_chromos;
+    }
+
+    /**
+     * å¯»æ‰¾æœ€ä¼˜é€‚åº”åº¦å€¼
+     */
+    public BigDecimal getBestFitness(Populations population) {
+        Chromosome best_chromos = sortPops(population).get(0);
+        BigDecimal best_fitness = best_chromos.calculateFitness(best_chromos.getListOfSCI());
+        return best_fitness;
+    }
+
+    public double getBestAttrFitness(Populations population) {
+        Chromosome best_attr_chromos = sortPops(population).get(0);
+        double best_attr_fitness = best_attr_chromos.calculateAttrFitness(best_attr_chromos.getListOfSCI());
+        return best_attr_fitness;
+    }
+
+    /**
+     * å¯»æ‰¾æœ€å·®ä¸ªä½“ï¼Œå¹¶å°†å…¶è®°å½•ä¸‹æ¥
+     */
+    public Chromosome getWorst(Populations population) {
+        Chromosome worstchromos = new Chromosome();
+        List<Chromosome> sortpopulations = sortPops(population);
+        worstchromos = sortpopulations.get(getSizeOfPopulations() - 1);
+        return worstchromos;
+    }
+
+    /**
+     * å¯»æ‰¾æœ€å·®é€‚åº”åº¦å€¼
+     */
+    public BigDecimal getWorstFitness(Populations population) {
+        Chromosome worst_chromos = sortPops(population).get(getSizeOfPopulations() - 1);
+        BigDecimal worst_fitness = worst_chromos.calculateFitness(worst_chromos.getListOfSCI());
+        return worst_fitness;
+    }
+
+    public void setChromos(int offset, Chromosome chromos) {
+
+        this.populations.add(offset, chromos);
+        // this.getListOfChromosome().add(offset, chromos);
+    }
+
+    public Chromosome getChromos(int offset) {
+
+        return this.populations.get(offset);
+    }
+
+    public void removeChromos(int offset) {
+
+        this.populations.remove(offset);
+    }
+
+    public int getSizeOfPopulations() {
+
+        return this.populations.size();
+    }
+
+    public List<Chromosome> getListOfChromosome() {
+        List<Chromosome> list_chrom = new ArrayList<Chromosome>();
+        // return this.populations;
+        for (int i = 0; i < this.getSizeOfPopulations(); i++) {
+            Chromosome chrom = this.getChromos(i);
+            list_chrom.add(i, chrom);
+        }
+        return list_chrom;
+    }
+
 }
